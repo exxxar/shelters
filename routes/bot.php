@@ -186,12 +186,12 @@ MilitaryServiceFacade::bot()
         if ($need_to_search) {
             $data = YaGeo::setQuery($text)->load();
             $data = (object)$data->getResponse()->getRawData();
-            
+
             $tmp = explode(' ', $data->Point["pos"]);
 
             getInfoByCoords((object)[
-                "lat" => $tmp[0] ?? 0,
-                "lon" => $tmp[1] ?? 0
+                "lat" => $tmp[1] ?? 0,
+                "lon" => $tmp[0] ?? 0
             ]);
 
 
