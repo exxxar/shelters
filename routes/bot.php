@@ -26,7 +26,6 @@ MilitaryServiceFacade::bot()
             return;
         }
 
-        MilitaryServiceFacade::bot()->reply("Будет доступен в ближайшее время!");
     })
     ->addRoute("/.*Доступные регионы ([()0-9]+)", function ($message, $command, $count) {
 
@@ -281,7 +280,7 @@ MilitaryServiceFacade::bot()
         Log::info("message=>" . print_r($message, true));
 
         $shelters_count = Shelter::query()->select("city", "id")->get()->unique('city')->count();
-        MilitaryServiceFacade::bot()->replyKeyboard("Главное меню", [
+        MilitaryServiceFacade::bot()->replyKeyboard("Главное меню. Тестовая версия. Обновлено <b>24.02.2022 12:20</b>", [
             [
                 ["text" => "\xF0\x9F\x93\x8DОтправить координаты", "request_location" => true],
             ],
@@ -292,16 +291,16 @@ MilitaryServiceFacade::bot()
                 ["text" => "\xF0\x9F\x93\x91Скачать список"],
                 ["text" => "\xF0\x9F\x92\xBBНастройки"],
             ],
-            [
+            /*[
                 ["text" => "\xE2\x98\x95Разработчикам на кофе"],
-            ]
+            ]*/
         ]);
     }, "start")
     ->addRoute("/help", function ($message) {
-        MilitaryServiceFacade::bot()->reply("Помощь!");
+        MilitaryServiceFacade::bot()->reply("https://vk.com/nddnr По вопросам помощи обращаться по ссылке!");
     })
     ->addRoute("/invoice", function ($message) {
-        MilitaryServiceFacade::bot()->replyInvoice("test", "test", [
-            ["label" => "Test", "amount" => 10000]
+        MilitaryServiceFacade::bot()->replyInvoice("Временно в разработке", "test", [
+            ["label" => "В разработке", "amount" => 10000]
         ], "data");
     });
