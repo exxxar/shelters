@@ -269,9 +269,9 @@ MilitaryServiceFacade::bot()
         foreach ($shelters as $shelter) {
 
             if ($shelter->lon == 0 || $shelter->lat == 0)
-                $link = "https://www.google.com.ua/maps/place/" . $shelter->address." ".$shelter->city;
+                $link = "https://www.google.com/maps/search/" . $shelter->address." ".$shelter->city;
             else
-                $link = "https://www.google.com.ua/maps/place/" . $shelter->lat . "," . $shelter->lon;
+                $link = "https://www.google.com/maps/search/" . $shelter->lat . "," . $shelter->lon;
 
             $tmp .= "\xF0\x9F\x93\x8D " . ($shelter->address ?? "-") . " <a href='" . $link . "'>На карте</a>\n";
         }
@@ -378,7 +378,7 @@ MilitaryServiceFacade::bot()
     ->addRoute("/start", function ($message) {
 
         $shelters_count = Shelter::query()->select("city", "id")->get()->unique('city')->count();
-        MilitaryServiceFacade::bot()->replyKeyboard("Главное меню. Тестовая версия. Обновлено <b>24.02.2022 12:20</b>", [
+        MilitaryServiceFacade::bot()->replyKeyboard("Главное меню. Тестовая версия. Обновлено <b>24.02.2022 23:20</b>", [
             [
                 ["text" => "\xF0\x9F\x93\x8DОтправить координаты", "request_location" => true],
             ],
