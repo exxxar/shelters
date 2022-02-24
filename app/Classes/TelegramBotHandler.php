@@ -20,18 +20,19 @@ class TelegramBotHandler extends BaseBot
 
     }
 
-    public function createUser($from){
+    public function createUser($from)
+    {
 
         $telegram_chat_id = $from->id;
-        $first_name = $from->first_name;
-        $last_name = $from->last_name;
-        $username = $from->username;
+        $first_name = $from->first_name ?? null;
+        $last_name = $from->last_name ?? null;
+        $username = $from->username ?? null;
 
         $this->user = User::where("telegram_chat_id", $telegram_chat_id)->first();
 
         if (is_null($this->user)) {
             $this->user = User::create([
-                'name' => $username??$telegram_chat_id,
+                'name' => $username ?? $telegram_chat_id,
                 'email' => "$telegram_chat_id@donbassit.ru",
                 'telegram_chat_id' => $telegram_chat_id,
                 'password' => bcrypt($telegram_chat_id),
@@ -42,7 +43,8 @@ class TelegramBotHandler extends BaseBot
         }
     }
 
-    public function currentUser(){
+    public function currentUser()
+    {
         return $this->user;
     }
 
@@ -67,7 +69,10 @@ class TelegramBotHandler extends BaseBot
         if (is_null($message))
             return;
 
-        $this->createUser($message->from);
+        if (isset($update["callback_query"]))
+            $this->createUser(json_decode($update["callback_query"]["from"]));
+        else
+            $this->createUser($message->from);
 
         $query = $item->message->text ?? $item->callback_query->data ?? '';
 
@@ -122,12 +127,12 @@ class TelegramBotHandler extends BaseBot
 
         }
 
-        if (!empty($this->next)){
-            foreach ($this->next as $item){
+        if (!empty($this->next)) {
+            foreach ($this->next as $item) {
                 try {
                     $item["function"]($message);
                     $find = true;
-                }catch (\Exception $e){
+                } catch (\Exception $e) {
                     Log::error($e->getMessage() . " " . $e->getLine());
                 }
             }
