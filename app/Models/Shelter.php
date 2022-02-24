@@ -102,8 +102,8 @@ class Shelter extends Model
         $lat1 = $latitude - ($dist / 111.0);
         $lat2 = $latitude + ($dist / 111.0);
 
-        $position = Shelter::whereBetween('latitude', [$lat1, $lat2])
-            ->whereBetween('longitude', [$lon1, $lon2])
+        $position = Shelter::whereBetween('lat', [$lat1, $lat2])
+            ->whereBetween('lon', [$lon1, $lon2])
             ->where('id', $this->id)
             ->first();
 

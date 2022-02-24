@@ -6,7 +6,7 @@ use App\Models\Shelter;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
-function getInfoByCoords($coords)
+function getInfoByCoords($coords, $page = 0)
 {
 
     $lat = $coords->lat;
@@ -22,7 +22,7 @@ function getInfoByCoords($coords)
     //MilitaryServiceFacade::bot()->reply(print_r(Shelter::getNearestQuestPoints($lat, $lon, $user->radius)->toArray(), true));
     $findLocation = false;
 
-    foreach (Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray() as $pos) {
+    foreach (Shelter::getNearestQuestPoints($lat, $lon, $radius, 5, $page * 5)->toArray() as $pos) {
 
         $pos = (object)$pos;
 
@@ -40,6 +40,17 @@ function getInfoByCoords($coords)
         /*  if ($pos->inRange($lat, $lng)) {
               $tmp_text .= "	\xF0\x9F\x94\xB7Точка " . $pos->city . " находится в 0.1км от вас!\n";
           }*/
+    }
+
+    if ($findLocation) {
+
+        $tmp = base64_encode("$lat $lon");
+
+        MilitaryServiceFacade::bot()->inlineKeyboard("Не найдено (в радиусе ~$radius км) ни одной ближайшей к вам точки:(", [
+            [
+                ["text" => "Показать еще!", "callback_data" => "/more_shelters $tmp " . ($page + 1)],
+            ]
+        ]);
     }
 
     if (!$findLocation) {
@@ -196,7 +207,7 @@ MilitaryServiceFacade::bot()
                     "lat" => $tmp[1] ?? 0,
                     "lon" => $tmp[0] ?? 0
                 ]);
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 MilitaryServiceFacade::bot()->reply("На текущий момент поиск ограничен!");
             }
 
@@ -249,6 +260,21 @@ MilitaryServiceFacade::bot()
         }
         MilitaryServiceFacade::bot()->inlineKeyboard("Локаций в регионе ($shelter_in_base - в нашей базе):\n $tmp", $keyboard);
 
+
+    })
+    ->addRoute("/more_shelters ([0-9a-zA-Z=]+) ([0-9]+)", function ($message, $command, $bCoords, $page) {
+
+        $tmp = base64_decode($bCoords);
+
+        $tmp = explode(" ", $tmp);
+
+        $lat = $tmp[0] ?? 0;
+        $lon = $tmp[1] ?? 0;
+
+        getInfoByCoords((object)[
+            "lat" => $lat,
+            "lon" => $lon
+        ], $page = 0);
 
     })
     ->addRoute("/shelters ([0-9a-zA-Z=]+) ([0-9]+)", function ($message, $command, $index, $page) {
