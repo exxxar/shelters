@@ -22,7 +22,7 @@ Route::get("/test" , function (){
 
     $lon = 37.782442;
     $lat = 47.978296;
-    $radius = 1;
+    $radius = 2;
     $page = 0;
     $array = Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray();
 
@@ -48,7 +48,7 @@ Route::get("/test" , function (){
         }
     }
 
-    dd(collect($array)->take(5)->skip(0));
+    dd(collect($array)->skip(10)->take(5));
 
 });
 

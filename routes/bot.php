@@ -40,9 +40,8 @@ function getInfoByCoords($coords, $page = 0)
     $findLocation = false;
 
     $array = Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray();
-    Log::info("ARRAY COUNT ".count($array)." page=>".$page);
-    $array = collect(sortNearestQuestPointsArray($array, $lat, $lon))->take(5)->skip($page*5);
-    Log::info(print_r($array,true));
+    $array = collect(sortNearestQuestPointsArray($array, $lat, $lon))->skip($page*5)->take(5);
+
     foreach ($array as $pos) {
 
         $pos = (object)$pos;
