@@ -1,100 +1,71 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Affan - PWA Mobile HTML Template">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#0134d4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!-- Title -->
+    <title>Affan - PWA Mobile HTML Template</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="img/core-img/favicon.ico">
+    <link rel="apple-touch-icon" href="img/icons/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="img/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="img/icons/icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/icons/icon-180x180.png">
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/bootstrap-icons.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/tiny-slider.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/baguetteBox.min.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/rangeslider.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/vanilla-dataTables.min.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/apexcharts.css')}}">
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="{{asset('/style.css')}}">
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="{{asset('/manifest.json')}}">
+</head>
+<body>
+<!-- Preloader -->
+<div id="preloader">
+    <div class="spinner-grow text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+</div>
 
-        <title>Laravel</title>
+<!-- Internet Connection Status -->
+<!-- # This code for showing internet connection status -->
+<div class="internet-connection-status" id="internetStatus"></div>
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+<div id="app">
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+    <application/>
+</div>
 
-            .full-height {
-                height: 100vh;
-            }
+<!-- All JavaScript Files -->
+<script src="{{asset('/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{asset('/js/slideToggle.min.js')}}"></script>
+<script src="{{asset('/js/internet-status.js')}}"></script>
+<script src="{{asset('/js/tiny-slider.js')}}"></script>
+<script src="{{asset('/js/baguetteBox.min.js')}}"></script>
+<script src="{{asset('/js/countdown.js')}}"></script>
+<script src="{{asset('/js/rangeslider.min.js')}}"></script>
+<script src="{{asset('/js/vanilla-dataTables.min.js')}}"></script>
+<script src="{{asset('/js/index.js')}}"></script>
+<script src="{{asset('/js/magic-grid.min.js')}}"></script>
+<script src="{{asset('/js/dark-rtl.js')}}"></script>
+<script src="{{asset('/js/active.js')}}"></script>
+<!-- PWA -->
+<script src="{{asset('/js/pwa.js')}}"></script>
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-            </div>
-        </div>
-    </body>
+<script src="{{ mix('/js/app.js') }}"></script>
+</body>
 </html>
+
