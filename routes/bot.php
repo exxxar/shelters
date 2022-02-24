@@ -42,7 +42,7 @@ function getInfoByCoords($coords, $page = 0)
     $array = Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray();
     Log::info("ARRAY COUNT ".count($array)." page=>".$page);
     $array = collect(sortNearestQuestPointsArray($array, $lat, $lon))->take(5)->skip($page*5);
-
+    Log::info(print_r($array,true));
     foreach ($array as $pos) {
 
         $pos = (object)$pos;

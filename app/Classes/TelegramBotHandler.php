@@ -62,7 +62,7 @@ class TelegramBotHandler extends BaseBot
 
         $item = json_decode($update);
 
-        Log::info(print_r($item, true));
+       // Log::info(print_r($item, true));
 
         $message = $item->message ?? $item->edited_message ?? $item->callback_query->message ?? null;
 
