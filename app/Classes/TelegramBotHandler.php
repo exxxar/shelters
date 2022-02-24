@@ -17,6 +17,10 @@ class TelegramBotHandler extends BaseBot
 
         //$this->bot->setWebhook(['url' => 'https://api.telegram.org/bot482400672:AAEZu9rGFZfbMOwrqCghI9cR4JhUAf_4xjQ/setWebhook?url=https://9324-109-254-191-71.ngrok.io']);
 
+
+    }
+
+    public function createUser($telegram_chat_id){
         $response = $this->bot->getMe();
 
         $botId = $response->getId();
@@ -24,16 +28,16 @@ class TelegramBotHandler extends BaseBot
         $username = $response->getUsername();
 
 
-        $this->user = User::where("telegram_chat_id", $botId)->first();
+        $this->user = User::where("telegram_chat_id", $telegram_chat_id)->first();
 
         if (is_null($this->user)) {
             $this->user = User::create([
                 'name' => $username ?? $firstName ?? null,
-                'email' => "$botId@donbassit.ru",
+                'email' => "$telegram_chat_id@donbassit.ru",
                 'telegram_chat_id' => $botId,
-                'password' => bcrypt($botId),
+                'password' => bcrypt($telegram_chat_id),
                 'full_name' => $firstName ?? null,
-                'radius' => 0.5
+                'radius' => 0.3
 
             ]);
         }
@@ -63,6 +67,8 @@ class TelegramBotHandler extends BaseBot
 
         if (is_null($message))
             return;
+
+        $this->createUser($item->message->chat->id);
 
         $query = $item->message->text ?? $item->callback_query->data ?? '';
 
