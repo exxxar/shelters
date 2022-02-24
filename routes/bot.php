@@ -180,7 +180,6 @@ MilitaryServiceFacade::bot()
         foreach ($objects as $object) {
             if (mb_strpos($text, $object) != false) {
                 $need_to_search = true;
-                break;
             }
 
         }
@@ -203,7 +202,7 @@ MilitaryServiceFacade::bot()
 
 
         } else {
-            MilitaryServiceFacade::bot()->reply("Методов не обнаружено!");
+            MilitaryServiceFacade::bot()->reply("Обратитесь за помощью в https://vk.com/nddnr");
         }
 
 
