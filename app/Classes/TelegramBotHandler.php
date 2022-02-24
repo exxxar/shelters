@@ -59,7 +59,10 @@ class TelegramBotHandler extends BaseBot
 
         Log::info(print_r($item, true));
 
-        $message = $item->message ?? $item->edited_message ?? $item->callback_query->message;
+        $message = $item->message ?? $item->edited_message ?? $item->callback_query->message ?? null;
+
+        if (is_null($message))
+            return;
 
         $query = $item->message->text ?? $item->callback_query->data ?? '';
 
