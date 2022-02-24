@@ -46,7 +46,7 @@ function getInfoByCoords($coords, $page = 0)
 
         $tmp = base64_encode("$lat $lon");
 
-        MilitaryServiceFacade::bot()->inlineKeyboard("Не найдено (в радиусе ~$radius км) ни одной ближайшей к вам точки:(", [
+        MilitaryServiceFacade::bot()->inlineKeyboard("В вашем радиусе (~$radius км) есть еще точки!", [
             [
                 ["text" => "Показать еще!", "callback_data" => "/more_shelters $tmp " . ($page + 1)],
             ]
