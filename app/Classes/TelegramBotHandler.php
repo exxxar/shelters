@@ -70,7 +70,7 @@ class TelegramBotHandler extends BaseBot
             return;
 
         if (isset($update["callback_query"]))
-            $this->createUser(json_decode($update["callback_query"]["from"]));
+            $this->createUser($item->callback_query->from);
         else
             $this->createUser($message->from);
 
