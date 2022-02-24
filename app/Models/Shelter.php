@@ -43,7 +43,7 @@ class Shelter extends Model
         'lon' => 'double',
     ];
 
-    public static function getNearestQuestPoints($latitude, $longitude, $dist, $take = 5, $skip = 0)
+    public static function getNearestQuestPoints($latitude, $longitude, $dist/*, $take = 5, $skip = 0*/)
     {
 
         $lon1 = $longitude - $dist / abs(cos(rad2deg($latitude)) * 111.0); # 1 градус широты = 111 км
@@ -53,10 +53,9 @@ class Shelter extends Model
 
         return Shelter::whereBetween('lat', [$lat1, $lat2])
             ->whereBetween('lon', [$lon1, $lon2])
-            ->take($take)
-            ->skip($skip)
+            /*->take($take)
+            ->skip($skip)*/
             ->get();
-
 
     }
 

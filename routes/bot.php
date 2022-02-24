@@ -6,6 +6,23 @@ use App\Models\Shelter;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
+function sortNearestQuestPointsArray($array, $lat, $lon){
+    for ($j = 0; $j < count($array) - 1; $j++){
+        for ($i = 0; $i < count($array) - $j - 1; $i++){
+            if (round(Shelter::dist($array[$i]["lat"], $array[$i]["lon"], $lat, $lon)) >
+                round(Shelter::dist($array[$i+1]["lat"], $array[$i+1]["lon"], $lat, $lon))
+            )
+            {
+                $tmp_var = $array[$i + 1];
+                $array[$i + 1] = $array[$i];
+                $array[$i] = $tmp_var;
+            }
+        }
+    }
+
+    return $array;
+}
+
 function getInfoByCoords($coords, $page = 0)
 {
 
@@ -22,9 +39,12 @@ function getInfoByCoords($coords, $page = 0)
     //MilitaryServiceFacade::bot()->reply(print_r(Shelter::getNearestQuestPoints($lat, $lon, $user->radius)->toArray(), true));
     $findLocation = false;
 
-    foreach (Shelter::getNearestQuestPoints($lat, $lon, $radius, 5, $page * 5)->toArray() as $pos) {
+    $array = Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray();
+    $array = collect(sortNearestQuestPointsArray($array, $lat, $lon))->take(5)->skip($page*5);
 
-        $pos = (object)$pos;
+    foreach ($array as $pos) {
+
+       // $pos = (object)$pos;
 
         $tmp_text = "<b>Ближайшие точки (в настройках ~$radius км):</b>\n";
         $tmp_text .= "\xF0\x9F\x94\xB6 " . $pos->address . "\n" . round(Shelter::dist($pos->lat, $pos->lon, $lat, $lon)) . " метров от вас \n";
