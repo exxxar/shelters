@@ -325,8 +325,6 @@ MilitaryServiceFacade::bot()
     })
     ->addRoute("/start", function ($message) {
 
-        Log::info("message=>" . print_r($message, true));
-
         $shelters_count = Shelter::query()->select("city", "id")->get()->unique('city')->count();
         MilitaryServiceFacade::bot()->replyKeyboard("Главное меню. Тестовая версия. Обновлено <b>24.02.2022 12:20</b>", [
             [
@@ -345,6 +343,10 @@ MilitaryServiceFacade::bot()
         ]);
     }, "start")
     ->addRoute("/help", function ($message) {
+        MilitaryServiceFacade::bot()->reply("Здравствуйте!\n
+Приветствуем Вас в чат-боте <b>НД ДНР</b>, который покажет адреса бомбоубежищ.\n
+В скором времени будет запущено приложение, работающее в оффлайн-режиме.\n
+Надеемся, оно Вам не пригодится 🙃");
         MilitaryServiceFacade::bot()->reply("https://vk.com/nddnr По вопросам помощи обращаться по ссылке!");
     })
     ->addRoute("/invoice", function ($message) {
