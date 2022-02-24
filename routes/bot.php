@@ -175,7 +175,7 @@ MilitaryServiceFacade::bot()
         $need_to_search = false;
         $text = $message->text ?? "";
 
-        $objects = ["ул.", "c.", "пгт.", "город", "г."];
+        $objects = ["ул.", "c.", "пгт.", "город", "г.", "квартал"];
 
         foreach ($objects as $object) {
             if (mb_strpos($text, $object) != false) {
