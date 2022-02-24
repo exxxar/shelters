@@ -20,23 +20,22 @@ class TelegramBotHandler extends BaseBot
 
     }
 
-    public function createUser($telegram_chat_id){
-        $response = $this->bot->getMe();
+    public function createUser($from){
 
-        $botId = $response->getId();
-        $firstName = $response->getFirstName();
-        $username = $response->getUsername();
-
+        $telegram_chat_id = $from->id;
+        $first_name = $from->first_name;
+        $last_name = $from->last_name;
+        $username = $from->username;
 
         $this->user = User::where("telegram_chat_id", $telegram_chat_id)->first();
 
         if (is_null($this->user)) {
             $this->user = User::create([
-                'name' => $username ?? $firstName ?? null,
+                'name' => $username??$telegram_chat_id,
                 'email' => "$telegram_chat_id@donbassit.ru",
                 'telegram_chat_id' => $telegram_chat_id,
                 'password' => bcrypt($telegram_chat_id),
-                'full_name' => $firstName ?? null,
+                'full_name' => "$first_name $last_name" ?? null,
                 'radius' => 0.3
 
             ]);
@@ -68,7 +67,7 @@ class TelegramBotHandler extends BaseBot
         if (is_null($message))
             return;
 
-        $this->createUser($message->chat->id);
+        $this->createUser($message->from);
 
         $query = $item->message->text ?? $item->callback_query->data ?? '';
 
