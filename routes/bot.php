@@ -60,7 +60,7 @@ MilitaryServiceFacade::bot()
         Excel::store(new ShelterExport, 'coords.xlsx');
 
 
-        MilitaryServiceFacade::bot()->replyDocument("Список всех убежищь", \Illuminate\Support\Facades\Storage::get("coords.xlsx"), "coords.xlsx");
+        MilitaryServiceFacade::bot()->replyDocument("Список всех убежищ", \Illuminate\Support\Facades\Storage::get("coords.xlsx"), "coords.xlsx");
 
 
         $schelters = \App\Models\Shelter::query()->get();
