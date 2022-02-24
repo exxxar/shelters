@@ -6,6 +6,50 @@ use App\Models\Shelter;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
+function getInfoByCoords($coords)
+{
+
+    $lat = $coords->lat;
+    $lon = $coords->lon;
+
+    $user = MilitaryServiceFacade::bot()->currentUser();
+
+    $radius = 0.5;
+
+    if (!is_null($user))
+        $radius = $user->radius ?? 0.5;
+
+    //MilitaryServiceFacade::bot()->reply(print_r(Shelter::getNearestQuestPoints($lat, $lon, $user->radius)->toArray(), true));
+    $findLocation = false;
+
+    foreach (Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray() as $pos) {
+
+        $pos = (object)$pos;
+
+        $tmp_text = "<b>Ближайшие точки (в настройках ~$radius км):</b>\n";
+        $tmp_text .= "\xF0\x9F\x94\xB6 " . $pos->address . "\n" . round(Shelter::dist($pos->lat, $pos->lon, $lat, $lon)) . " метров от вас \n";
+        $tmp_text .= "Город: <b>" . $pos->city . "</b>\n";
+        $tmp_text .= "На балане: <b>" . $pos->balance_holder . "</b>\n";
+        $tmp_text .= "Отвественный: <b>" . $pos->responsible_person . "</b>\n";
+        $tmp_text .= "Описание: <b>" . $pos->description . "</b>\n";
+
+        MilitaryServiceFacade::bot()->replyLocation($pos->lat, $pos->lon);
+        MilitaryServiceFacade::bot()->reply($tmp_text);
+
+        $findLocation = true;
+        /*  if ($pos->inRange($lat, $lng)) {
+              $tmp_text .= "	\xF0\x9F\x94\xB7Точка " . $pos->city . " находится в 0.1км от вас!\n";
+          }*/
+    }
+
+    if (!$findLocation) {
+        MilitaryServiceFacade::bot()->inlineKeyboard("Не найдено (в радиусе ~$radius км) ни одной ближайшей к вам точки:(", [
+            [
+                ["text" => "Сменить настройки дальности", "callback_data" => "/settings"],
+            ]
+        ]);
+    }
+}
 
 MilitaryServiceFacade::bot()
     ->addRoute("/.*Скачать список", function ($message) {
@@ -123,50 +167,41 @@ MilitaryServiceFacade::bot()
     ->addRouteLocation(function ($message, $coords) {
         //MilitaryServiceFacade::bot()->reply("Координаты!" . $coords->lon . " " . $coords->lat);
 
-        $lat = $coords->lat;
-        $lon = $coords->lon;
-
-        $user = MilitaryServiceFacade::bot()->currentUser();
-
-        $radius = 0.5;
-
-        if (!is_null($user))
-            $radius = $user->radius ?? 0.5;
-
-        //MilitaryServiceFacade::bot()->reply(print_r(Shelter::getNearestQuestPoints($lat, $lon, $user->radius)->toArray(), true));
-        $findLocation = false;
-
-        foreach (Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray() as $pos) {
-
-            $pos = (object)$pos;
-
-            $tmp_text = "<b>Ближайшие точки (в настройках ~$radius км):</b>\n";
-            $tmp_text .= "\xF0\x9F\x94\xB6 " . $pos->address . "\n" . round(Shelter::dist($pos->lat, $pos->lon, $lat, $lon)) . " метров от вас \n";
-            $tmp_text .= "Город: <b>" . $pos->city . "</b>\n";
-            $tmp_text .= "На балане: <b>" . $pos->balance_holder . "</b>\n";
-            $tmp_text .= "Отвественный: <b>" . $pos->responsible_person . "</b>\n";
-            $tmp_text .= "Описание: <b>" . $pos->description . "</b>\n";
-
-            MilitaryServiceFacade::bot()->replyLocation($pos->lat, $pos->lon);
-            MilitaryServiceFacade::bot()->reply($tmp_text);
-
-            $findLocation = true;
-            /*  if ($pos->inRange($lat, $lng)) {
-                  $tmp_text .= "	\xF0\x9F\x94\xB7Точка " . $pos->city . " находится в 0.1км от вас!\n";
-              }*/
-        }
-
-        if (!$findLocation) {
-            MilitaryServiceFacade::bot()->inlineKeyboard("Не найдено (в радиусе ~$radius км) ни одной ближайшей к вам точки:(", [
-                [
-                    ["text" => "Сменить настройки дальности", "callback_data" => "/settings"],
-                ]
-            ]);
-        }
 
     })
     ->addRouteFallback(function ($message) {
-        MilitaryServiceFacade::bot()->reply("Методов не обнаружено!");
+        $need_to_search = false;
+        $text = $message->text ?? "";
+
+        $objects = ["ул.", "c.", "пгт.", "город", "г."];
+
+        foreach ($objects as $object) {
+            if (mb_strpos($text, $object) != false) {
+                $need_to_search = true;
+                break;
+            }
+
+        }
+
+        if ($need_to_search) {
+            $data = YaGeo::setQuery($text)->load();
+            $data = (object)$data->getResponse()->getRawData();
+            
+            $tmp = explode(' ', $data->Point["pos"]);
+
+            getInfoByCoords((object)[
+                "lat" => $tmp[0] ?? 0,
+                "lon" => $tmp[1] ?? 0
+            ]);
+
+
+        } else {
+            MilitaryServiceFacade::bot()->reply("Методов не обнаружено!");
+        }
+
+
+        //MilitaryServiceFacade::bot()->reply("Методов не обнаружено!");
+
     });
 
 MilitaryServiceFacade::bot()
