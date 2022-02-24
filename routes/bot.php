@@ -178,7 +178,7 @@ MilitaryServiceFacade::bot()
         $objects = ["ул.", "c.", "пгт.", "город", "г.", "квартал", "улица", "район", "микрорайон", "мк-р"];
 
         foreach ($objects as $object) {
-            if (mb_strpos($text, $object) != false) {
+            if (mb_strpos($text, $object) !== false) {
                 $need_to_search = true;
             }
 
