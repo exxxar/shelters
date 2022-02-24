@@ -68,7 +68,7 @@ class TelegramBotHandler extends BaseBot
         if (is_null($message))
             return;
 
-        $this->createUser($item->message->chat->id);
+        $this->createUser($message->chat->id);
 
         $query = $item->message->text ?? $item->callback_query->data ?? '';
 
