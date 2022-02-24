@@ -219,14 +219,20 @@ MilitaryServiceFacade::bot()
 
             try {
                 $data = YaGeo::setQuery($text)->load();
-                $data = (object)$data->getResponse()->getRawData();
 
-                $tmp = explode(' ', $data->Point["pos"]);
+                if (!is_null($data->getResponse())){
+                    $data = (object)$data->getResponse()->getRawData();
 
-                getInfoByCoords((object)[
-                    "lat" => $tmp[1] ?? 0,
-                    "lon" => $tmp[0] ?? 0
-                ]);
+                    $tmp = explode(' ', $data->Point["pos"]);
+
+                    getInfoByCoords((object)[
+                        "lat" => $tmp[1] ?? 0,
+                        "lon" => $tmp[0] ?? 0
+                    ]);
+                } else {
+                    MilitaryServiceFacade::bot()->reply("На ваш запрос ничего не найдено! Попробуйте ввести данные по примеру <b>город Донецк, ул. Кирова, 22</b>");
+                }
+
             } catch (Exception $e) {
                 MilitaryServiceFacade::bot()->reply("На текущий момент поиск ограничен!");
             }
