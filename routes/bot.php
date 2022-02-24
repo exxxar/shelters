@@ -16,7 +16,7 @@ MilitaryServiceFacade::bot()
         Excel::store(new ShelterExport, 'coords.xlsx');
 
 
-        MilitaryServiceFacade::bot()->replyDocument("Список всех убежищь",\Illuminate\Support\Facades\Storage::get("coords.xlsx"),"coords.xlsx");
+        MilitaryServiceFacade::bot()->replyDocument("Список всех убежищь", \Illuminate\Support\Facades\Storage::get("coords.xlsx"), "coords.xlsx");
 
 
         $schelters = \App\Models\Shelter::query()->get();
@@ -66,8 +66,13 @@ MilitaryServiceFacade::bot()
 
         $user = MilitaryServiceFacade::bot()->currentUser();
 
+        $radius = 0.5;
+
+        if (!is_null($user))
+            $radius = $user->radius ?? 0.5;
+
         foreach ($radius_table as $key => $value) {
-            if ($user->radius === $value) {
+            if ($radius === $value) {
                 $index = $key;
                 break;
             }
@@ -123,20 +128,24 @@ MilitaryServiceFacade::bot()
 
         $user = MilitaryServiceFacade::bot()->currentUser();
 
+        $radius = 0.5;
+
+        if (!is_null($user))
+            $radius = $user->radius ?? 0.5;
 
         //MilitaryServiceFacade::bot()->reply(print_r(Shelter::getNearestQuestPoints($lat, $lon, $user->radius)->toArray(), true));
         $findLocation = false;
 
-        foreach (Shelter::getNearestQuestPoints($lat, $lon, $user->radius)->toArray() as $pos) {
+        foreach (Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray() as $pos) {
 
             $pos = (object)$pos;
 
-            $tmp_text = "<b>Ближайшие точки (в настройках ~$user->radius км):</b>\n";
+            $tmp_text = "<b>Ближайшие точки (в настройках ~$radius км):</b>\n";
             $tmp_text .= "\xF0\x9F\x94\xB6 " . $pos->address . "\n" . round(Shelter::dist($pos->lat, $pos->lon, $lat, $lon)) . " метров от вас \n";
-            $tmp_text .="Город: <b>".$pos->city."</b>\n";
-            $tmp_text .="На балане: <b>".$pos->balance_holder."</b>\n";
-            $tmp_text .="Отвественный: <b>".$pos->responsible_person."</b>\n";
-            $tmp_text .="Описание: <b>".$pos->description."</b>\n";
+            $tmp_text .= "Город: <b>" . $pos->city . "</b>\n";
+            $tmp_text .= "На балане: <b>" . $pos->balance_holder . "</b>\n";
+            $tmp_text .= "Отвественный: <b>" . $pos->responsible_person . "</b>\n";
+            $tmp_text .= "Описание: <b>" . $pos->description . "</b>\n";
 
             MilitaryServiceFacade::bot()->replyLocation($pos->lat, $pos->lon);
             MilitaryServiceFacade::bot()->reply($tmp_text);
@@ -148,7 +157,7 @@ MilitaryServiceFacade::bot()
         }
 
         if (!$findLocation) {
-            MilitaryServiceFacade::bot()->inlineKeyboard("Не найдено (в радиусе ~$user->radius км) ни одной ближайшей к вам точки:(", [
+            MilitaryServiceFacade::bot()->inlineKeyboard("Не найдено (в радиусе ~$radius км) ни одной ближайшей к вам точки:(", [
                 [
                     ["text" => "Сменить настройки дальности", "callback_data" => "/settings"],
                 ]
@@ -172,7 +181,7 @@ MilitaryServiceFacade::bot()
             ->skip(0)
             ->get();
 
-        $shelter_in_base =  Shelter::query()
+        $shelter_in_base = Shelter::query()
             ->where("city", $regions[$index]["city"])->count();
 
 
@@ -184,21 +193,20 @@ MilitaryServiceFacade::bot()
             if ($shelter->lon == 0 || $shelter->lat == 0)
                 $link = "https://www.google.com.ua/maps/place/" . $shelter->address;
             else
-                $link = "https://www.google.com.ua/maps/place/" . $shelter->lat.",".$shelter->lon;
+                $link = "https://www.google.com.ua/maps/place/" . $shelter->lat . "," . $shelter->lon;
 
-                $tmp .= "\xF0\x9F\x93\x8D " . ($shelter->address ?? "-") . " <a href='" . $link . "'>На карте</a>\n";
+            $tmp .= "\xF0\x9F\x93\x8D " . ($shelter->address ?? "-") . " <a href='" . $link . "'>На карте</a>\n";
         }
 
 
         $keyboard = [];
 
-        if ($shelter_in_base>20)
-        {
+        if ($shelter_in_base > 20) {
             array_push($keyboard, [
                 ["text" => "Еще убежища", "callback_data" => "/shelters " . $index . " 1"]
             ]);
         }
-        MilitaryServiceFacade::bot()->inlineKeyboard("Локаций в регионе ($shelter_in_base - в нашей базе):\n $tmp",$keyboard);
+        MilitaryServiceFacade::bot()->inlineKeyboard("Локаций в регионе ($shelter_in_base - в нашей базе):\n $tmp", $keyboard);
 
 
     })
@@ -211,10 +219,10 @@ MilitaryServiceFacade::bot()
         $shelters = Shelter::query()
             ->where("city", $regions[$index]["city"])
             ->take(20)
-            ->skip($page*20)
+            ->skip($page * 20)
             ->get();
 
-        $shelter_in_base =  Shelter::query()
+        $shelter_in_base = Shelter::query()
             ->where("city", $regions[$index]["city"])->count();
 
 
@@ -226,7 +234,7 @@ MilitaryServiceFacade::bot()
             if ($shelter->lon == 0 || $shelter->lat == 0)
                 $link = "https://www.google.com.ua/maps/place/" . $shelter->address;
             else
-                $link = "https://www.google.com.ua/maps/place/" . $shelter->lat.",".$shelter->lon;
+                $link = "https://www.google.com.ua/maps/place/" . $shelter->lat . "," . $shelter->lon;
 
             $tmp .= "\xF0\x9F\x93\x8D " . ($shelter->address ?? "-") . " <a href='" . $link . "'>На карте</a>\n";
         }
@@ -234,13 +242,12 @@ MilitaryServiceFacade::bot()
 
         $keyboard = [];
 
-        if ($shelter_in_base>$page*20+$shelters->count())
-        {
+        if ($shelter_in_base > $page * 20 + $shelters->count()) {
             array_push($keyboard, [
-                ["text" => "Еще убежища", "callback_data" => "/shelters " . $index . " ".($page+1) ]
+                ["text" => "Еще убежища", "callback_data" => "/shelters " . $index . " " . ($page + 1)]
             ]);
         }
-        MilitaryServiceFacade::bot()->inlineKeyboard("Локаций в регионе ($shelter_in_base - в нашей базе):\n $tmp",$keyboard);
+        MilitaryServiceFacade::bot()->inlineKeyboard("Локаций в регионе ($shelter_in_base - в нашей базе):\n $tmp", $keyboard);
 
 
     })

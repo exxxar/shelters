@@ -24,10 +24,10 @@ class TelegramBotHandler extends BaseBot
         $username = $response->getUsername();
 
 
-        $this->user = User::query()->where("telegram_chat_id", $botId)->first();
+        $this->user = User::where("telegram_chat_id", $botId)->first();
 
         if (is_null($this->user)) {
-            $this->user = User::query()->create([
+            $this->user = User::create([
                 'name' => $username ?? $firstName ?? null,
                 'email' => "$botId@donbassit.ru",
                 'telegram_chat_id' => $botId,
