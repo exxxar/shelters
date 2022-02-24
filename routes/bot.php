@@ -274,7 +274,7 @@ MilitaryServiceFacade::bot()
         getInfoByCoords((object)[
             "lat" => $lat,
             "lon" => $lon
-        ], $page = 0);
+        ], $page);
 
     })
     ->addRoute("/shelters ([0-9a-zA-Z=]+) ([0-9]+)", function ($message, $command, $index, $page) {
