@@ -37,7 +37,7 @@ class TelegramBotHandler extends BaseBot
                 'telegram_chat_id' => $telegram_chat_id,
                 'password' => bcrypt($telegram_chat_id),
                 'full_name' => "$first_name $last_name" ?? null,
-                'radius' => 0.3
+                'radius' => 0.5
 
             ]);
         }
