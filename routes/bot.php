@@ -269,7 +269,7 @@ MilitaryServiceFacade::bot()
         foreach ($shelters as $shelter) {
 
             if ($shelter->lon == 0 || $shelter->lat == 0)
-                $link = "https://www.google.com.ua/maps/place/" . $shelter->address;
+                $link = "https://www.google.com.ua/maps/place/" . $shelter->address." ".$shelter->city;
             else
                 $link = "https://www.google.com.ua/maps/place/" . $shelter->lat . "," . $shelter->lon;
 
