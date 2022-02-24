@@ -41,10 +41,10 @@ function getInfoByCoords($coords, $page = 0)
 
     $array = Shelter::getNearestQuestPoints($lat, $lon, $radius)->toArray();
     $array = collect(sortNearestQuestPointsArray($array, $lat, $lon))->take(5)->skip($page*5);
-
+    
     foreach ($array as $pos) {
 
-       // $pos = (object)$pos;
+        $pos = (object)$pos;
 
         $tmp_text = "<b>Ближайшие точки (в настройках ~$radius км):</b>\n";
         $tmp_text .= "\xF0\x9F\x94\xB6 " . $pos->address . "\n" . round(Shelter::dist($pos->lat, $pos->lon, $lat, $lon)) . " метров от вас \n";
