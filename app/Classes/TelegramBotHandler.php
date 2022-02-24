@@ -34,7 +34,7 @@ class TelegramBotHandler extends BaseBot
             $this->user = User::create([
                 'name' => $username ?? $firstName ?? null,
                 'email' => "$telegram_chat_id@donbassit.ru",
-                'telegram_chat_id' => $botId,
+                'telegram_chat_id' => $telegram_chat_id,
                 'password' => bcrypt($telegram_chat_id),
                 'full_name' => $firstName ?? null,
                 'radius' => 0.3
