@@ -166,8 +166,10 @@ MilitaryServiceFacade::bot()
     })
     ->addRouteLocation(function ($message, $coords) {
         //MilitaryServiceFacade::bot()->reply("Координаты!" . $coords->lon . " " . $coords->lat);
-
-
+        getInfoByCoords((object)[
+            "lat" => $coords->lat ?? 0,
+            "lon" => $coords->lon ?? 0
+        ]);
     })
     ->addRouteFallback(function ($message) {
         $need_to_search = false;
@@ -184,15 +186,20 @@ MilitaryServiceFacade::bot()
         }
 
         if ($need_to_search) {
-            $data = YaGeo::setQuery($text)->load();
-            $data = (object)$data->getResponse()->getRawData();
 
-            $tmp = explode(' ', $data->Point["pos"]);
+            try {
+                $data = YaGeo::setQuery($text)->load();
+                $data = (object)$data->getResponse()->getRawData();
 
-            getInfoByCoords((object)[
-                "lat" => $tmp[1] ?? 0,
-                "lon" => $tmp[0] ?? 0
-            ]);
+                $tmp = explode(' ', $data->Point["pos"]);
+
+                getInfoByCoords((object)[
+                    "lat" => $tmp[1] ?? 0,
+                    "lon" => $tmp[0] ?? 0
+                ]);
+            }catch (Exception $e){
+                MilitaryServiceFacade::bot()->reply("На текущий момент поиск ограничен!");
+            }
 
 
         } else {
