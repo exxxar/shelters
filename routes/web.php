@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Route::get("/test" , function (){
 
-    $lon = 37.782442;
+   /* $lon = 37.782442;
     $lat = 47.978296;
     $radius = 2;
     $page = 0;
@@ -48,7 +48,30 @@ Route::get("/test" , function (){
         }
     }
 
-    dd(collect($array)->skip(10)->take(5));
+    dd(collect($array)->skip(10)->take(5));*/
+/*    $data = YaGeo::setQuery("Горловка ул. Пионерская 10")->load();
+    dd($data->);
+    return;*/
+
+    $shelters = Shelter::query()->where("lat",0)->get();
+
+    set_time_limit(3600);
+
+    foreach ($shelters as $shelter) {
+        $data = YaGeo::setQuery("$shelter->city $shelter->address")->load();
+
+        if (!is_null($data->getResponse())) {
+            $data = (object)$data->getResponse()->getRawData();
+
+            $tmp = explode(' ', $data->Point["pos"]);
+
+            $shelter->lat = $tmp[1] ?? 0;
+            $shelter->lon = $tmp[0] ?? 0;
+            $shelter->save();
+        }
+    }
+
+
 
 });
 
