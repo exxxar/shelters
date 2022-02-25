@@ -325,9 +325,9 @@ MilitaryServiceFacade::bot()
         foreach ($shelters as $shelter) {
 
             if ($shelter->lon == 0 || $shelter->lat == 0)
-                $link = "https://www.google.com.ua/maps/place/" . $shelter->address;
+                $link = "https://www.google.com/maps/search/" . $shelter->address." ". $shelter->city;
             else
-                $link = "https://www.google.com.ua/maps/place/" . $shelter->lat . "," . $shelter->lon;
+                $link = "https://www.google.com/maps/search/" . $shelter->lat . "," . $shelter->lon;
 
             $tmp .= "\xF0\x9F\x93\x8D " . ($shelter->address ?? "-") . " <a href='" . $link . "'>На карте</a>\n";
         }
