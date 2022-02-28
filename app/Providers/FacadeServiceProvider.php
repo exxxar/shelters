@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Classes\TelegramBotHandler;
-use App\Classes\TelegramMessage;
 use Illuminate\Support\ServiceProvider;
 
 class FacadeServiceProvider extends ServiceProvider

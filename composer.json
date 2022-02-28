@@ -8,16 +8,17 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.4",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
-        "irazasyed/telegram-bot-sdk": "^3.5",
-        "jackmartin/laravel-yandex-geocode": "^1.2",
         "laravel/framework": "^7.0",
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.0",
-        "maatwebsite/excel": "^3.1"
+
+        "maatwebsite/excel": "^3.1",
+        "irazasyed/telegram-bot-sdk": "^3.5",
+        "jackmartin/laravel-yandex-geocode": "^1.2"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

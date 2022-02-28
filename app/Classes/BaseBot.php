@@ -7,14 +7,15 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 
 abstract class BaseBot
 {
-    protected $bot;
+    protected $bot; //экземпляр бота
 
-    protected $chatId;
+    protected $chatId; //идентификатор чата текущего пользовтеля
 
-    protected $routes = [];
+    protected $routes = []; //добавленные в систему маршруты
 
-    protected $next = [];
+    protected $next = []; //список маршрутов для повторного вызова
 
+    /* блок ответа на сообщения */
     public function reply($message)
     {
         return $this->sendMessage($this->chatId, $message);
@@ -45,29 +46,28 @@ abstract class BaseBot
         return $this->sendDocument($this->chatId, $caption, InputFile::createFromContents($path, $filename));
     }
 
-
     public function inlineKeyboard($message, $keyboard = [])
     {
         return $this->sendInlineKeyboard($this->chatId, $message, $keyboard);
 
     }
 
+    /* блок отправки сообщения на указанный чат id */
+    //отправка текстового сообщения
     public function sendMessage($chatId, $message)
     {
         try {
-            $this->bot->sendMessage([
-                "chat_id" => $chatId,
-                "text" => $message,
-                "parse_mode" => "HTML"
+            $this->bot->sendMessage([//метод из телеграм API sendMessage
+                "chat_id" => $chatId, //основной параметр, chat_id того, кому отправляется сообщение
+                "text" => $message, //основной параметр, текст сообщения
+                "parse_mode" => "HTML" //вспомогательный параметр - тип разметки сообщения
             ]);
         } catch (\Exception $e) {
 
         }
-
-        return $this;
-
+        return $this; //возвращаем ссылку на себя же для упрощенного вызова функций
     }
-
+    //отправка локации
     public function sendLocation($chatId, $lat, $lon)
     {
         try {
@@ -84,7 +84,7 @@ abstract class BaseBot
         return $this;
 
     }
-
+    //отправка документ
     public function sendDocument($chatId, $caption, $path)
     {
         try {
@@ -101,8 +101,7 @@ abstract class BaseBot
         return $this;
 
     }
-
-
+    //отправка клавитауры главного меню
     public function sendReplyKeyboard($chatId, $message, $keyboard)
     {
 
@@ -126,7 +125,7 @@ abstract class BaseBot
         return $this;
 
     }
-
+    //отправка запроса на оплату
     public function sendInvoice($chatId, $title, $description, $prices, $data)
     {
         try {
@@ -149,7 +148,7 @@ abstract class BaseBot
         //                ["label"=>"Test", "amount"=>10000]
         //            ]
     }
-
+    //редактирование встроенной клавитатуры
     public function editInlineKeyboard($chatId, $messageId, $keyboard)
     {
         try {
@@ -168,7 +167,7 @@ abstract class BaseBot
 
         return $this;
     }
-
+    //отправка встроенной клавитауры
     public function sendInlineKeyboard($chatId, $message, $keyboard)
     {
 
@@ -189,6 +188,7 @@ abstract class BaseBot
         return $this;
     }
 
+    /* блок системных функций ядра бот */
     public function next($name)
     {
         foreach ($this->routes as $route) {

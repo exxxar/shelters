@@ -59,7 +59,6 @@ class Shelter extends Model
 
     }
 
-
     public static function dist($fLat1, $lLon1, $fLat2, $lLon2)
     {
         $earth_radius = 6372795;

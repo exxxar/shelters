@@ -53,7 +53,7 @@ Route::get("/test" , function (){
     dd($data->);
     return;*/
 
-    $shelters = Shelter::query()->where("lat",0)->get();
+ /*   $shelters = Shelter::query()->where("lat",0)->get();
 
     set_time_limit(3600);
 
@@ -69,9 +69,18 @@ Route::get("/test" , function (){
             $shelter->lon = $tmp[0] ?? 0;
             $shelter->save();
         }
-    }
+    }*/
 
+   /* set_time_limit(3600);
+    $users = \App\User::query()->get();
 
+    foreach ($users as $user){
+        \App\Facades\MilitaryServiceFacade::bot()->sendMessage($user->telegram_chat_id,"
+        ⚡️Друзья, подписывайтесь на Telegram-канал Народной Дружины и будьте вкурсе последних новостей.\n
+Подписаться можно здесь👇🏻\n
+@nddnr
+        ");
+    }*/
 
 });
 
