@@ -158,7 +158,7 @@ MilitaryServiceFacade::bot()
         }
 
         MilitaryServiceFacade::bot()
-            ->inlineKeyboard("Из какого региона отобрзить центры сбора гуманитарной помощи?", $keyboard)
+            ->inlineKeyboard("Из какого региона отобразить центры сбора гуманитарной помощи?", $keyboard)
             ->next("start");
 
     })
