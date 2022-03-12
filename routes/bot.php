@@ -451,7 +451,6 @@ MilitaryServiceFacade::bot()
         MilitaryServiceFacade::bot()->reply("Следующий регион! $command $region $page");
     })
     ->addRoute("/start", function ($message) {
-
         $shelters_count = Shelter::query()->select("city", "id")->get()->unique('city')->count();
         $aid_center_count = AidCenter::query()->select("city", "id")->get()->unique('city')->count();
 
@@ -460,9 +459,7 @@ MilitaryServiceFacade::bot()
 ⚡️Друзья, подписывайтесь на Telegram-канал Народной Дружины и будьте вкурсе последних новостей.\n
 Подписаться можно здесь👇🏻\n
 @nddnr
-",
-
-            [
+",            [
                 [
                     ["text" => "\xF0\x9F\x93\x8DОтправить координаты", "request_location" => true],
                 ],

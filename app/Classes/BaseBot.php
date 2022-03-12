@@ -67,32 +67,53 @@ abstract class BaseBot
         }
         return $this; //возвращаем ссылку на себя же для упрощенного вызова функций
     }
+
     //отправка локации
     public function sendLocation($chatId, $lat, $lon)
     {
         try {
             $this->bot->sendLocation([
-                "chat_id" => $chatId,
-                "latitude" => $lat,
-                "longitude" => $lon,
-                "parse_mode" => "HTML"
+                "chat_id" => $chatId, //идентификатор телеграм чата
+                "latitude" => $lat, //широта
+                "longitude" => $lon, //долгота
+                "parse_mode" => "HTML" //режима отображения контента (парсинга),
+                // другие вариант: Markdown и MarkdownV2
             ]);
         } catch (\Exception $e) {
 
         }
-
         return $this;
 
     }
+
     //отправка документ
     public function sendDocument($chatId, $caption, $path)
     {
         try {
             $this->bot->sendDocument([
-                "chat_id" => $chatId,
-                "document" => $path,
-                "caption" => $caption,
-                "parse_mode" => "HTML"
+                "chat_id" => $chatId,//идентификатор телеграм чата
+                "document" => $path, //отпрваляемое содержимое или путь
+                "caption" => $caption, //подпись к документу
+                "parse_mode" => "HTML" //режима отображения контента (парсинга),
+                // другие вариант: Markdown и MarkdownV2
+            ]);
+        } catch (\Exception $e) {
+
+        }
+        return $this;
+
+    }
+
+    //отправка фото
+    public function sendPhoto($chatId, $caption, $path)
+    {
+        try {
+            $this->bot->sendPhoto([
+                "chat_id" => $chatId, //идентификатор телеграм чата
+                "photo" => $path,//отпрваляемое содержимое или путь
+                "caption" => $caption, //подпись к изображению
+                "parse_mode" => "HTML" //режима отображения контента (парсинга),
+                // другие вариант: Markdown и MarkdownV2
             ]);
         } catch (\Exception $e) {
 
@@ -101,19 +122,20 @@ abstract class BaseBot
         return $this;
 
     }
+
     //отправка клавитауры главного меню
     public function sendReplyKeyboard($chatId, $message, $keyboard)
     {
-
         try {
             $this->bot->sendMessage([
-                "chat_id" => $chatId,
-                "text" => $message,
-                "parse_mode" => "HTML",
+                "chat_id" => $chatId, //идентификатор телеграм чата
+                "text" => $message, //отправляемое сообщение (Вместе с клавиатурой)
+                "parse_mode" => "HTML", //режима отображения контента (парсинга),
+                // другие вариант: Markdown и MarkdownV2
                 'reply_markup' => json_encode([
-                    'keyboard' => $keyboard,
-                    'resize_keyboard' => true,
-                    'input_field_placeholder' => "Выбор действия"
+                    'keyboard' => $keyboard, //объект клавиатуры
+                    'resize_keyboard' => true, //растягивать или нет клавиатуру до максимально возможного значения по высоте
+                    'input_field_placeholder' => "Выбор действия" //текстовая подпись для поля ввода
                 ])
 
             ]);
@@ -121,63 +143,69 @@ abstract class BaseBot
         } catch (\Exception $e) {
 
         }
-
         return $this;
-
     }
+
+
+
+
     //отправка запроса на оплату
     public function sendInvoice($chatId, $title, $description, $prices, $data)
     {
         try {
             $this->bot->sendInvoice([
-                "chat_id" => $chatId,
-                "title" => $title,
-                "description" => $description,
-                "payload" => $data,
-                "provider_token" => env("PAYMENT_PROVIDER_TOKEN"),
-                "currency" => env("PAYMENT_PROVIDER_CURRENCY"),
-                "prices" => $prices,
+                "chat_id" => $chatId, //идентификатор телеграм чата
+                "title" => $title, //пояснение к оплате
+                "description" => $description, //описание сделки
+                "payload" => $data, //полезная нагрузка
+                "provider_token" => env("PAYMENT_PROVIDER_TOKEN"), //ключ платежной системы
+                "currency" => env("PAYMENT_PROVIDER_CURRENCY"), //валюта оплаты
+                "prices" => $prices, //цена
+
+                //[
+                //                ["label"=>"Test", "amount"=>10000]
+                //            ]
             ]);
         } catch (\Exception $e) {
 
         }
 
         return $this;
-
-        //[
-        //                ["label"=>"Test", "amount"=>10000]
-        //            ]
     }
+
     //редактирование встроенной клавитатуры
     public function editInlineKeyboard($chatId, $messageId, $keyboard)
     {
         try {
             $this->bot->editMessageReplyMarkup([
-                "chat_id" => $chatId,
-                "message_id" => $messageId,
-                "parse_mode" => "HTML",
+                "chat_id" => $chatId, //идентификатор телеграм чата
+                "message_id" => $messageId, //идентификатор сообщения внутри чта
+                "parse_mode" => "HTML",//режима отображения контента (парсинга),
+                // другие вариант: Markdown и MarkdownV2
                 'reply_markup' => json_encode([
-                    'inline_keyboard' => $keyboard,
+                    'inline_keyboard' => $keyboard, //новая встроенная клавиатура,
+                    // должна отличаться от содержимого предидущей клавиатуры
                 ])
 
             ]);
         } catch (\Exception $e) {
 
         }
-
         return $this;
     }
+
     //отправка встроенной клавитауры
     public function sendInlineKeyboard($chatId, $message, $keyboard)
     {
 
         try {
             $this->bot->sendMessage([
-                "chat_id" => $chatId,
-                "text" => $message,
-                "parse_mode" => "HTML",
+                "chat_id" => $chatId,//идентификатор телеграм чата
+                "text" => $message, //текст сообещения, который отправляется с клавиатурой
+                "parse_mode" => "HTML",//режима отображения контента (парсинга),
+                // другие вариант: Markdown и MarkdownV2
                 'reply_markup' => json_encode([
-                    'inline_keyboard' => $keyboard,
+                    'inline_keyboard' => $keyboard, //встроенная клавиатура,
                 ])
 
             ]);
@@ -189,14 +217,17 @@ abstract class BaseBot
     }
 
     /* блок системных функций ядра бот */
+
     public function next($name)
     {
+        //проверяем массив маршрутов $routes на вхождение функции с именем $name
         foreach ($this->routes as $route) {
-            if (isset($route["name"]))
-                if ($route["name"] == $name)
-                    array_push($this->next, [
+            if (isset($route["name"])) //проверка проходит только среди существующих параметров
+                if ($route["name"] == $name) //сравнение на равенство
+                    array_push($this->next, [ //если имя найдено в маршрутах,
+                        // то копируем связанную с этим именем функцию в новый массив $next
                         "name" => $name,
-                        "function" => $route["function"],
+                        "function" => $route["function"], //скопированная функция
                         //  "arguments"=>$arguments??[]
                     ]);
         }
@@ -204,13 +235,14 @@ abstract class BaseBot
         return $this;
     }
 
-    public function addRoute($path, $function, $name = null): TelegramBotHandler
+    public function addRoute($path, $function, $name = null): TelegramBotHandler //возврщает ссылку на базовый класс
     {
+        //добавляем в общий список маршрутов новый маршрут
         array_push($this->routes, [
-            "path" => $path,
-            "is_service" => false,
-            "function" => $function,
-            "name" => $name
+            "path" => $path, //внешний путь для обращения (регулярное выражение)
+            "is_service" => false, //является ли маршрут сервисным (системным)
+            "function" => $function, //вызываемая функция
+            "name" => $name //внутреннее имя маршрута
         ]);
 
         return $this;

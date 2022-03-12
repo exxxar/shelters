@@ -2,6 +2,7 @@
 
 use App\Models\Shelter;
 use Illuminate\Support\Facades\Route;
+use Telegram\Bot\FileUpload\InputFile;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,16 +72,15 @@ Route::get("/test" , function (){
         }
     }*/
 
-   /* set_time_limit(3600);
+   set_time_limit(3600);
     $users = \App\User::query()->get();
 
     foreach ($users as $user){
-        \App\Facades\MilitaryServiceFacade::bot()->sendMessage($user->telegram_chat_id,"
-        ⚡️Друзья, подписывайтесь на Telegram-канал Народной Дружины и будьте вкурсе последних новостей.\n
-Подписаться можно здесь👇🏻\n
-@nddnr
-        ");
-    }*/
+        \App\Facades\MilitaryServiceFacade::bot()->sendPhoto($user->telegram_chat_id,"#СвоихНеБросаем #ZаПобеду #СилаVПравде #ZадачаБудетVыполнена",
+            InputFile::createFromContents(\Illuminate\Support\Facades\Storage::get("1.jpg"), "1.jpg")
+
+        );
+    }
 
 });
 
